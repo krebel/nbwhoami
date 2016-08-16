@@ -1,1 +1,10 @@
 # nbwhoami
+
+Purpose: helpful tool to gather compare and display OS/NetBackup hostname(s)/IP(s) of current localhost
+
+Usage: execute 'python nbwhoami.py'
+
+TODO:
+- add hostname -f output
+- hone the regex (on lines 43-47) to find only exact hostname excluding other characters added to the hostname for grep'ing from files
+- add 'bpclntcmd -pn' query to master
