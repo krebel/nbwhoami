@@ -9,4 +9,3 @@ TODO:
 - add hostname -f output
 - hone the regex (on lines 43-47) to find only exact hostname excluding other characters added to the hostname for grep'ing from files
 - add 'bpclntcmd -pn' query to master
-- add/change some text colors
