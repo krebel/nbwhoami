@@ -7,7 +7,6 @@
 from __future__ import print_function
 import os, commands, re
 
-
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -25,11 +24,9 @@ class bcolors:
         self.ENDC = ''
 
 
-
 self = commands.getoutput('hostname')
 
-
-def mynameIs():
+def mynameis():
 
     # Obtain OS hostname:
     self = commands.getoutput('hostname')
@@ -38,35 +35,38 @@ def mynameIs():
 
     # Display all /etc/hosts entries containing the hostname:
     print('+++++++++++++++++++++++++++++++++++++++++++++++++')
-    print(bcolors.OKBLUE + self + ' appears in /etc/hosts file as:' + bcolors.ENDC)
+    #print(bcolors.OKBLUE + self + ' appears in /etc/hosts file as:' + bcolors.ENDC)
     print(' ')
-    hstsFile = open('/etc/hosts', 'r')
-    for line in hstsFile:
+    hstsfile = open('/etc/hosts', 'r')
+    for line in hstsfile:
         if str(self) in line:
-            print(bcolors.WARNING + line, end='' + bcolors.ENDC)
+            print(bcolors.WARNING + self + ' appears in hosts file as ' + line, end='' + bcolors.ENDC)
             #print(re.findall(self, line))
-    hstsFile.close()
+        else:
+            print(bcolors.FAIL + self + ' does not appear in /etc/hosts file!' + bcolors.ENDC)
+            return()
+    hstsfile.close()
     print(' ')
     print(' ')
 
     # Resolve hostname with dig:
     print('+++++++++++++++++++++++++++++++++++++++++++++++++')
     print(bcolors.OKBLUE + 'dig reports for ' + self + ':' + bcolors.ENDC)
-    digNfo = commands.getoutput('dig ' + str(self))
-    answrRegex = re.compile(r'ANSWER: \d')
-    hits = answrRegex.search(digNfo)
-    answrvalRegex = re.compile(r'\d')
-    answrVal = answrvalRegex.search(hits.group())
+    dignfo = commands.getoutput('dig ' + str(self))
+    answrregex = re.compile(r'ANSWER: \d')
+    hits = answrregex.search(dignfo)
+    answrvalregex = re.compile(r'\d')
+    answrval = answrvalregex.search(hits.group())
     if (hits.group()) == 'ANSWER: 0':
         print(bcolors.FAIL + 'DNS has no record of ' + self + bcolors.ENDC)
     else:
         print(bcolors.OKGREEN + 'DNS resolved ' + self + bcolors.ENDC)
-        print(digNfo)
+        print(dignfo)
     print(' ')
     print(' ')
 
 
-def nbthinksIam():
+def nbthinksiam():
 
     # Display all bp.conf entries containing the hostname:
     print('+++++++++++++++++++++++++++++++++++++++++++++++++')
@@ -74,25 +74,25 @@ def nbthinksIam():
     print(' ')
 
     # Open bp.conf to read, read it:
-    bpConf = open('/usr/openv/netbackup/bp.conf', 'r')
-    for line in bpConf:
+    bpconf = open('/usr/openv/netbackup/bp.conf', 'r')
+    for line in bpconf:
         if str(self) in line:
             print(bcolors.WARNING + line, end='' + bcolors.ENDC)
 
     # Close bp.conf file:
-    bpConf.close()
+    bpconf.close()
     print(' ')
     print(' ')
 
     # Display all vm.conf entries with hostname:
     print('+++++++++++++++++++++++++++++++++++++++++++++++++')
-    vmConf = open('/usr/openv/volmgr/vm.conf', 'r')
+    vmconf = open('/usr/openv/volmgr/vm.conf', 'r')
     print(bcolors.OKBLUE + self + ' appears in vm.conf file as:' + bcolors.ENDC)
     print(' ')
-    for line in vmConf:
+    for line in vmconf:
         if self in line:
             print(bcolors.WARNING + line + bcolors.ENDC)
-    vmConf.close()
+    vmconf.close()
     print(' ')
     print(' ')
 
@@ -116,35 +116,52 @@ def nbthinksIam():
     vxdbms.close()
     print(' ')
     print(' ')
-    srvrConf = open('/usr/openv/var/global/server.conf', 'r')
+    srvrconf = open('/usr/openv/var/global/server.conf', 'r')
     print(bcolors.OKBLUE + self + ' appears in server.conf file as:' + bcolors.ENDC)
     print(' ')
-    for line in srvrConf:
+    for line in srvrconf:
         if self in line:
            print(bcolors.WARNING + line + bcolors.ENDC)
 
-    srvrConf.close()
+    srvrconf.close()
     print(' ')
     print(' ')
  
-    srvrName = open('/usr/openv/db/bin/servername', 'r')
+    srvrname = open('/usr/openv/db/bin/servername', 'r')
     print(bcolors.OKBLUE + self + ' appears in /usr/openv/db/bin/servername as:' + bcolors.ENDC)
     print(' ')
-    for line in srvrName:
+    for line in srvrname:
         if self in line:
             print(bcolors.WARNING + line + bcolors.ENDC)
-    srvrName.close()
+    srvrname.close()
     print(' ')
     print(' ')
     print(' ')
 
+
+def peername():
+    self = commands.getoutput('hostname')
+    # Display peername info about hostname:
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++')
+    print(bcolors.OKBLUE + 'Peername info about' + self + ' :' + bcolors.ENDC)
+    pn = commands.getoutput('/usr/openv/netbackup/bin/bpclntcmd -pn')    
+    for line in pn:
+        print(line.rstrip('\n'))
+        #if "expecting" in line:
+        #    print(bcolors.WARNING + self + ' is ' + line + bcolors.ENDC)
+    #print(bcolors.WARNING + pn + bcolors.ENDC)
+    print(' ')
+    print(' ')
+
+
 if __name__ == '__main__':
-    mynameIs()
-    nbthinksIam()
+    mynameis()
+    nbthinksiam()
     print ('completed')
 
 
 
 
 # NB bptestbpcd/bpclntcmd outputs:
+
 
